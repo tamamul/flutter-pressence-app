@@ -1,0 +1,40 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:flutter_login/flutter_login.dart';
+import '../controllers/login_controller.dart';
+
+class LoginView extends GetView<LoginController> {
+  const LoginView({Key? key}) : super(key: key);
+  
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('LOGIN'),
+        centerTitle: true,
+      ),
+      body: LoginScreen(
+        title: 'Presence',
+        onLogin: _authUser,
+        onSignup: _registerUser,
+        onSubmitAnimationCompleted: () {},
+        onRecoverPassword: _recoverPassword,
+        // Additional customizations to match your style can be added here.
+      ),
+    );
+  }
+
+  Future<String?> _authUser(LoginData data) {
+    return controller.login(data.name, data.password);
+  }
+
+  Future<String?> _registerUser(LoginData data) {
+    // Placeholder for the registration logic
+    return Future.value(null);
+  }
+
+  Future<String?> _recoverPassword(String name) {
+    // Placeholder for the password recovery logic
+    return Future.value(null);
+  }
+}
