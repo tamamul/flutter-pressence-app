@@ -1,0 +1,64 @@
+name: Flutter CI/CD
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2. Setup Flutter
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.32.8' # sesuaikan dengan versi Flutter kamu
+
+      # 3. Cache Flutter dependencies
+      - name: Cache Flutter dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.pub-cache
+            .dart_tool
+          key: ${{ runner.os }}-flutter-${{ hashFiles('**/pubspec.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-flutter-
+
+      # 4. Get dependencies
+      - name: Flutter pub get
+        run: flutter pub get
+
+      # 5. Analyze code
+      - name: Flutter analyze
+        run: flutter analyze
+
+      # 6. Run tests
+      - name: Flutter test
+        run: flutter test
+
+      # 7. Build APK debug
+      - name: Build APK (debug)
+        run: flutter build apk --debug
+
+      # 8. Build APK release
+      - name: Build APK (release)
+        run: flutter build apk --release
+
+      # 9. Upload APK artifacts
+      - name: Upload APKs
+        uses: actions/upload-artifact@v3
+        with:
+          name: presence-apks
+          path: |
+            build/app/outputs/flutter-apk/app-debug.apk
+            build/app/outputs/flutter-apk/app-release.apk
